@@ -1,0 +1,26 @@
+body {
+    background: black;
+    color: #BBB;
+    font-size: 15px;
+    font-family: "Lucida Console", monospace;
+}
+
+.terminal-container {
+    width: 98vw;
+    height: 98vh;
+    overflow-y: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border: 2px solid #BBB;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}

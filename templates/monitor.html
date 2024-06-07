@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminal Emulator</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="terminal-container">
+        <pre>{{ result | safe }}</pre>
+    </div>
+</body>
+</html>
