@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminal Emulator</title>
+    <link href="static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="terminal-container">
+        <pre id="terminal-output"></pre>
+    </div>
+</body>
+<script>
+const terminalOutputElement = document.getElementById('terminal-output');
+let event;
+
+const eventSource = new EventSource('http://127.0.0.1:8000/test-stream');
+
+eventSource.onopen = () => {
+    console.log('EventSource connected')
+    terminalOutputElement.innerText = ''
+}
+
+eventSource.addEventListener('testEvent', function (event) {
+    eventJson = JSON.parse(event.data);
+    console.log('testEvent', `${JSON.stringify(eventJson)}`);
+    terminalOutputElement.textContent += `Event JSON: ${JSON.stringify(eventJson)}\n`;
+});
+
+eventSource.onerror = (error) => {
+    console.error('EventSource failed', error)
+    eventSource.close()
+}
+</script>
+</html>

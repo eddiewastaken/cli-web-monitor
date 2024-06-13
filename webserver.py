@@ -1,9 +1,16 @@
+import json
+
 import uvicorn
+
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+from sse_starlette.sse import EventSourceResponse
+from starlette.middleware.cors import CORSMiddleware
+
+import asyncio
 import subprocess
 import argparse
 
@@ -14,6 +21,36 @@ args = parser.parse_args()
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+def create_event_stream_message(event_name, event_json):
+    return (f'event: {event_name}\n'
+            f'data: {event_json}\n\n')
+
+
+async def waypoints_generator():
+    waypoints = open('waypoints.json')
+    waypoints = json.load(waypoints)
+    for waypoint in waypoints[0: 10]:
+        yield create_event_stream_message("locationUpdate", json.dumps(waypoint))
+
+
+async def test_event_generator():
+    for i in range(10):
+        yield create_event_stream_message("testEvent", json.dumps({"id": i}))
+
+
+@app.get("/test-stream")
+async def test_stream():
+    return StreamingResponse(test_event_generator(), media_type="text/event-stream")
 
 
 def run_command(command):
