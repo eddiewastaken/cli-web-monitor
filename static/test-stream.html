@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Terminal Emulator</title>
-    <link href="static/style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
     <div class="terminal-container">
@@ -14,7 +14,8 @@
 const terminalOutputElement = document.getElementById('terminal-output');
 let event;
 
-const eventSource = new EventSource('http://127.0.0.1:8000/test-stream');
+const eventSource = new EventSource('http://127.0.0.1:8000/monitor');
+//const eventSource = new EventSource('http://10.10.10.2:8000/monitor');
 
 eventSource.onopen = () => {
     console.log('EventSource connected')
@@ -24,7 +25,7 @@ eventSource.onopen = () => {
 eventSource.addEventListener('testEvent', function (event) {
     eventJson = JSON.parse(event.data);
     console.log('testEvent', `${JSON.stringify(eventJson)}`);
-    terminalOutputElement.textContent += `Event JSON: ${JSON.stringify(eventJson)}\n`;
+    terminalOutputElement.textContent += `${eventJson.output}`;
 });
 
 eventSource.onerror = (error) => {
