@@ -28,7 +28,7 @@ def create_event_stream_message(event_name, event_json):
 
 
 def yield_command_output(command):
-    with Popen(command, stdout=PIPE, bufsize=1, universal_newlines=True) as p:
+    with Popen(command, stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
         for line in p.stdout:
             yield create_event_stream_message("testEvent", json.dumps({"output": line}))
             sys.stdout.flush()
